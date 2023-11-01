@@ -28,7 +28,7 @@ class SimpleFileMove:
         self.window.configure(bg="white")
 
         # 로고
-        photo = PhotoImage(file=self.resource_path("resource/logo.png"))
+        photo = PhotoImage(file=self.resourcePath("resource/logo.png"))
         logo = Label(self.window, image=photo, borderwidth=0)
         logo.place(x=0, y=5)
 
@@ -36,7 +36,8 @@ class SimpleFileMove:
         companyName = Label(self.window, text='회사 명', font=font, bg="white", anchor="w")
         companyName.place(x=110, y=160, width=130, height=30)
 
-        companyInput = Entry(self.window, textvariable=self.companyName, font=font, bg="white", bd=1, highlightbackground="white",
+        companyInput = Entry(self.window, textvariable=self.companyName, font=font, bg="white", bd=1,
+                             highlightbackground="white",
                              highlightcolor="blue")
         companyInput.place(x=260, y=160, width=250, height=30)
 
@@ -44,7 +45,8 @@ class SimpleFileMove:
         productName = Label(self.window, text='제품 명', font=font, bg="white", anchor="w")
         productName.place(x=110, y=200, width=130, height=30)
 
-        productInput = Entry(self.window, textvariable=self.productName, font=font, bg="white", bd=1, highlightbackground="white",
+        productInput = Entry(self.window, textvariable=self.productName, font=font, bg="white", bd=1,
+                             highlightbackground="white",
                              highlightcolor="blue")
         productInput.place(x=260, y=200, width=250, height=30)
 
@@ -74,7 +76,7 @@ class SimpleFileMove:
 
         # 결과
         submitResult = Label(self.window, textvariable=self.submitResult, text="", font=font, bg="white", anchor="w")
-        submitResult.place(x=370, y=360, width=60, height=30)
+        submitResult.place(x=110, y=400, width=300, height=30)
 
         submit = Button(self.window, text="확인", command=self.fileMove, bd=1, highlightbackground="white")
         submit.place(x=450, y=360, width=60, height=30)
@@ -84,8 +86,11 @@ class SimpleFileMove:
     # 파일 선택 로직
     def fileSelect(self):
         self.window.file = filedialog.askopenfile(parent=self.window, title='파일을 선택해주세요.')
-        self.sourcePath = self.window.file.name
-        self.window.file.close()
+        if hasattr(self.window.file, 'name'):
+            self.sourcePath = self.window.file.name
+            self.window.file.close()
+        else:
+            self.sourcePath = ''
 
     # 폴더 선택 로직
     def folderSelect(self):
@@ -94,6 +99,9 @@ class SimpleFileMove:
 
     # 저장 경로 재정의
     def movePathSet(self, targetDir):
+        if targetDir == '':
+            return
+
         if platform.system() == 'windows':
             separator = '\\'
         else:
@@ -105,6 +113,13 @@ class SimpleFileMove:
 
     # 파일 이동 로직
     def fileMove(self):
+        if self.targetPath == '':
+            self.resultMessage('저장 폴더 위치를 먼저 선택해주세요.')
+            return
+        elif self.sourcePath == '':
+            self.resultMessage('첨부 파일을 먼저 선택해주세요.')
+            return
+
         # 저장 경로 존재 여부 확인 및 없으면 생성
         if not os.path.exists(self.targetDir):
             os.makedirs(self.targetDir)
@@ -114,17 +129,24 @@ class SimpleFileMove:
 
         # 이동 성공 여부 확인
         if os.path.exists(self.targetPath):
-            self.submitResult.set('성공')
+            self.resultMessage('성공')
         else:
-            self.submitResult.set('실패')
+            self.resultMessage('실패')
 
     # 리소스 위치 변경
-    def resource_path(self, relative_path):
+    def resourcePath(self, relativePath):
         try:
             base_path = sys._MEIPASS
         except Exception:
             base_path = os.path.abspath(".")
-        return os.path.join(base_path, relative_path)
+        return os.path.join(base_path, relativePath)
+
+    # 결과 메시지 출력
+    def resultMessage(self, message):
+        if message == '' or message == None:
+            self.submitResult.set('오류')
+        else:
+            self.submitResult.set(message)
 
 
 if __name__ == '__main__':
