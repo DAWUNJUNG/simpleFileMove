@@ -89,7 +89,7 @@ class simple_file_move:
         yscrollbar.pack(side="right", fill="both")
         self.input_file_listbox.config(xscrollcommand=xscrollbar.set, yscrollcommand=yscrollbar.set)
 
-        input_file_btn = tkinter.Button(self.window, text='파일을 선택하거나 드롭해주세요.', font=12, command=self.file_select,
+        input_file_btn = tkinter.Button(self.window, text='파일 선택', font=12, command=self.file_select,
                                         bd=1, highlightbackground="white")
         input_file_btn.place(x=260, y=490, width=250, height=30)
 
