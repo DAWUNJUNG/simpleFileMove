@@ -4,7 +4,6 @@ import shutil
 import sys
 import tkinter.font
 from tkinter import Tk, PhotoImage, Label, Entry, Button, filedialog
-from tkinterdnd2 import DND_FILES, TkinterDnD
 
 
 class simple_file_move:
