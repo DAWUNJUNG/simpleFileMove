@@ -1,0 +1,1 @@
+pyinstaller -w -F -n="간편 파일 이동" -icon="resource/icon.png" --add-data="resource/*:resource" --collect-all TkinterDnD2 --version-file file_version_info.txt app.py
